@@ -5,7 +5,7 @@ Run this code:
 
 ```
 > git clone https://github.com/isurusiri/go-http-server.git
-> cd go
+> cd go-http-server
 > go run main.go
 ```
 
