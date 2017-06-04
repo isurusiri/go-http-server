@@ -1,3 +1,5 @@
+// dirty way. this looks ok since this
+// is not too complecated or large.
 package main
 
 import (
