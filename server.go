@@ -43,8 +43,21 @@ func loggingHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
+func recoverHandler(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Printf("panic: %+v", err)
+				http.Error(w, http.StatusText(500), 500)
+			}
+		}()
+		next.ServeHTTP(w, r)
+	}
+	return http.HandlerFunc(fn)
+}
+
 func main() {
-	commonHandlers := alice.New(loggingHandler)
+	commonHandlers := alice.New(loggingHandler, recoverHandler)
 	http.Handle("/", commonHandlers.ThenFunc(indexHandler))
 	http.Handle("/about", commonHandlers.ThenFunc(aboutHandler))
 	http.ListenAndServe(":8085", nil)
