@@ -43,11 +43,14 @@ func loggingHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
+// a function to log internal server errors.
+// a differed function is used to recover in such
+// situations.
 func recoverHandler(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Printf("panic: %+v", err)
+				log.Printf("error: %+v", err)
 				http.Error(w, http.StatusText(500), 500)
 			}
 		}()
